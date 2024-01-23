@@ -11,6 +11,7 @@ import org.openqa.selenium.Cookie;
 import java.util.ArrayList;
 import java.util.List;
 
+import static api.BooksApi.*;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
@@ -26,7 +27,7 @@ public class BooksTests extends TestBase {
         LoginResponseModel loginResponse = authorizationApi.login(credentials);
 
         step("Очищаем список книг через API в Profile", () ->
-                BooksApi.cleanAllBooks(loginResponse.getToken(), loginResponse.getUserId())
+                cleanAllBooks(loginResponse.getToken(), loginResponse.getUserId())
         );
 
         step("Добавляем книгу через API в Profile", () -> {
@@ -38,7 +39,7 @@ public class BooksTests extends TestBase {
             addNewBook.setUserId(loginResponse.getUserId());
             addNewBook.setCollectionOfIsbns(isbnList);
 
-            BooksApi.addNewBookToProfile(loginResponse.getToken(), addNewBook);
+            addNewBookToProfile(loginResponse.getToken(), addNewBook);
         });
 
         step("Проверяем имя пользователя и название добавленной книги на UI", () -> {
@@ -49,8 +50,8 @@ public class BooksTests extends TestBase {
             getWebDriver().manage().addCookie(new Cookie("token", loginResponse.getToken()));
 
             open("/profile");
-            $("#userName-value").shouldHave(text(credentials.getUserName()));
-            $("[id='see-book-Learning JavaScript Design Patterns']").getText().equals("Learning JavaScript Design Patterns");
+            assertThat($("#userName-value").getText()).isEqualTo(credentials.getUserName());
+            assertThat($("[id='see-book-Learning JavaScript Design Patterns']").getText()).isEqualTo("Learning JavaScript Design Patterns");
         });
 
         step("Удаляем добавленную книгу через API", () -> {
@@ -59,12 +60,12 @@ public class BooksTests extends TestBase {
             deleteBook.setIsbn("9781449331818");
             deleteBook.setUserId(loginResponse.getUserId());
 
-            BooksApi.deleteOneBook(loginResponse.getToken(), deleteBook);
+            deleteOneBook(loginResponse.getToken(), deleteBook);
         });
 
         step("Проверяем на UI отсутствие добавленной книги в профайле", () -> {
             open("/profile");
-            assertThat($(".rt-noData").getText().equals("No rows found"));
+            assertThat($(".rt-noData").getText()).isEqualTo("No rows found");
         });
     }
 }

@@ -1,5 +1,7 @@
 package tests;
+
 import api.AuthorizationApi;
+import api.BooksApi;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import helpers.Attach;
@@ -9,12 +11,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import io.qameta.allure.selenide.AllureSelenide;
+
 import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.*;
 
 public class TestBase {
     AuthorizationApi authorizationApi = new AuthorizationApi();
+    BooksApi booksApi = new BooksApi();
 
     @BeforeAll
     static void setup() {
@@ -42,8 +46,9 @@ public class TestBase {
         Attach.browserConsoleLogs();
         Attach.addVideo();
     }
-@AfterAll
-static void clearAll() {
+
+    @AfterAll
+    static void clearAll() {
         clearBrowserCookies();
         clearBrowserLocalStorage();
         closeWebDriver();
