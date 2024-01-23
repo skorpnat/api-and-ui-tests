@@ -43,7 +43,7 @@ public class TestBase {
         Attach.addVideo();
     }
 @AfterAll
-    void clearAll() {
+static void clearAll() {
         clearBrowserCookies();
         clearBrowserLocalStorage();
         closeWebDriver();
